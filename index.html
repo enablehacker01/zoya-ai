@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ZOYA AI — V10 Upload</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%}body{font-family:Arial,sans-serif;background:#fff;color:#202123}.zora{width:100%;max-width:900px;height:650px;margin:auto;display:flex;flex-direction:column;background:#fff;overflow:hidden}:root{--zora-logo:url("https://drive.google.com/thumbnail?id=13yvCD_AJqoGExm57zGdtTUEezW5EAWo9&sz=w1000")}.header{height:64px;display:flex;align-items:center;padding:0 22px;border-bottom:1px solid #eee;flex-shrink:0}.logo,.avatar,.welcome-logo{background-image:var(--zora-logo);background-repeat:no-repeat;background-size:270%;background-position:center 38%;background-color:#111;overflow:hidden}.logo{width:38px;height:38px;border-radius:12px;margin-right:12px}.title{font-size:18px;font-weight:600}.status{margin-left:10px;font-size:12px;color:#777}.chat{flex:1;overflow-y:auto;padding:30px 22px;scroll-behavior:smooth}.message{display:flex;margin-bottom:28px;width:100%}.message.user{justify-content:flex-end}.message.ai{justify-content:flex-start}.avatar{width:32px;height:32px;border-radius:10px;margin-right:10px;flex-shrink:0}.bubble{max-width:75%;line-height:1.6;font-size:15px;overflow-wrap:anywhere}.user .bubble{background:#f0f0f0;padding:12px 16px;border-radius:18px;white-space:pre-wrap}.ai .bubble{white-space:normal}.ai .bubble strong{font-weight:700}.ai .bubble em{font-style:italic}.ai-heading{display:inline-block;font-weight:700;margin:6px 0 2px}.ai-code-block{display:block;background:#f5f5f5;padding:10px 12px;margin:8px 0;border-radius:8px;font-family:monospace;white-space:pre-wrap;overflow-x:auto}.ai .bubble code{background:#f1f1f1;padding:2px 5px;border-radius:5px;font-family:monospace;font-size:13px}.ai-bullet,.ai-number{display:block;margin-left:4px;padding-left:4px}.welcome{text-align:center;margin-top:100px}.welcome-logo{width:65px;height:65px;margin:auto;border-radius:20px}.welcome h1{margin:20px 0 8px;font-size:26px}.welcome p{color:#777;font-size:14px}.loading,.retry-status{font-size:13px;color:#888;display:none}.loading{margin:0 0 12px 64px}.retry-status{margin:0 0 15px 64px}.dot{animation:blink 1.4s infinite}.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}.input-area{padding:15px 20px 20px;flex-shrink:0}.input-box{display:flex;align-items:center;border:1px solid #d9d9d9;border-radius:18px;padding:7px 8px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.04)}#question{flex:1;border:0;outline:0;font:15px Arial,sans-serif;resize:none;min-height:42px;max-height:150px;padding:11px 8px 0;background:transparent;color:#202123}#question::placeholder{color:#999}#uploadButton,#mic,#send{width:40px;height:40px;border:0;border-radius:12px;cursor:pointer;flex-shrink:0;transition:.2s}#uploadButton{background:transparent;color:#555;font-size:19px;margin-right:3px}#uploadButton:hover{background:#f1f1f1}#mic{background:#f1f1f1;color:#111;font-size:18px;margin-right:6px}#mic:hover{background:#e7e7e7}#mic.listening,#mic.permission-needed{background:#111;color:#fff}#send{background:#111;color:#fff;font-size:18px}#send:hover{opacity:.85}#uploadButton:disabled,#mic:disabled,#send:disabled{opacity:.4;cursor:not-allowed}#documentInput{display:none}#uploadStatus,#voiceStatus{display:none;font-size:12px;color:#777;margin:7px 4px 0}
+#uploadStatus.active,#voiceStatus.active{display:block}
+.upload-progress{display:none;margin-top:7px;height:5px;background:#eee;border-radius:999px;overflow:hidden}
+.upload-progress.active{display:block}
+.upload-progress-bar{height:100%;width:0;background:#111;border-radius:999px;transition:width .15s ease}
+.upload-meta{display:none;justify-content:space-between;gap:10px;font-size:11px;color:#888;margin-top:4px}#voicePermission{display:none;position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:99999;width:min(420px,calc(100vw - 32px));padding:14px 16px;background:#fff;color:#111;border:1px solid #ddd;border-radius:14px;box-shadow:0 10px 35px rgba(0,0,0,.18);font-size:13px;line-height:1.45}#voicePermission.active{display:block}#voicePermission strong{display:block;margin-bottom:5px}#voicePermission button{margin-top:10px;border:0;border-radius:10px;padding:9px 13px;background:#111;color:#fff;cursor:pointer}@media(max-width:600px){.zora{height:100vh;height:100dvh}.header{padding:0 18px}.chat{padding:20px 15px}.bubble{max-width:85%}.welcome{margin-top:80px}.welcome h1{font-size:23px}.input-area{padding:10px 12px 14px}}
+</style>
+</head>
+<body>
+<div class="zora">
+<div class="header"><div class="logo"></div><div class="title">ZOYA AI</div><div class="status">AI Assistant</div></div>
+<div class="chat" id="chat"><div class="welcome" id="welcome"><div class="welcome-logo"></div><h1>Apa yang bisa saya bantu?</h1><p>Tanyakan sesuatu kepada ZOYA AI</p></div></div>
+<div class="loading" id="loading">ZOYA sedang berpikir <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></div>
+<div class="retry-status" id="retryStatus">Mencoba menghubungkan kembali...</div>
+<div class="input-area"><div class="input-box">
+<button id="uploadButton" type="button" title="Upload dokumen" aria-label="Upload dokumen">📎</button>
+<input id="documentInput" type="file" accept=".pdf,.txt,.doc,.docx,.csv">
+<textarea id="question" placeholder="Tanya apa saja..." rows="1" autocomplete="off"></textarea>
+<button id="mic" type="button" title="Bicara" aria-label="Voice input">🎤</button>
+<button id="send" type="button" title="Kirim">↑</button>
+</div><div id="uploadStatus"></div><div class="upload-progress" id="uploadProgress"><div class="upload-progress-bar" id="uploadProgressBar"></div></div><div class="upload-meta" id="uploadMeta"><span id="uploadFileName"></span><span id="uploadPercent"></span></div><div id="voiceStatus">🎙️ Mendengarkan...</div></div>
+<div id="voicePermission" role="dialog" aria-live="polite"><strong>🎤 Izin microphone diperlukan</strong><div id="voicePermissionText">ZORA membutuhkan akses microphone untuk mengubah suara kamu menjadi teks.</div><button id="voicePermissionButton" type="button">Izinkan Microphone</button></div>
+</div>
+<script>
+const BACKEND_URL="https://script.google.com/macros/s/AKfycbw33TXwySs86gmsMloKyXFSXiaQx38nnn-7Lo8-af-BK6nnchC2wGH52ogF-aVit1j7Cg/exec";
+const MEMORY_KEY="ZORA_AI_MEMORY_V10",MAX_HISTORY_MESSAGES=8,MAX_HISTORY_CHARS=1200,MAX_RETRIES=3,REQUEST_TIMEOUT=45000;
+let conversationHistory=[],isSending=false,recognition=null,isListening=false,voiceBaseText="";
+const $=id=>document.getElementById(id),questionInput=$("question"),chat=$("chat"),loading=$("loading"),sendButton=$("send"),welcome=$("welcome"),retryStatus=$("retryStatus"),micButton=$("mic"),voiceStatus=$("voiceStatus"),voicePermission=$("voicePermission"),voicePermissionButton=$("voicePermissionButton"),voicePermissionText=$("voicePermissionText"),uploadButton=$("uploadButton"),documentInput=$("documentInput"),uploadStatus=$("uploadStatus"),uploadProgress=$("uploadProgress"),uploadProgressBar=$("uploadProgressBar"),uploadMeta=$("uploadMeta"),uploadFileName=$("uploadFileName"),uploadPercent=$("uploadPercent");
+function loadMemory(){try{const s=localStorage.getItem(MEMORY_KEY);if(!s)return;const d=JSON.parse(s);if(Array.isArray(d))conversationHistory=d.filter(x=>x&&(x.role==="user"||x.role==="assistant")&&typeof x.text==="string"&&x.text.trim()).slice(-MAX_HISTORY_MESSAGES)}catch(e){conversationHistory=[]}}
+function saveMemory(){try{conversationHistory=conversationHistory.slice(-MAX_HISTORY_MESSAGES);localStorage.setItem(MEMORY_KEY,JSON.stringify(conversationHistory))}catch(e){}}
+function prepareHistory(h){return Array.isArray(h)?h.slice(-MAX_HISTORY_MESSAGES).map(x=>({role:x.role,text:String(x.text||"").slice(0,MAX_HISTORY_CHARS)})):[]}
+function formatAIResponse(t){if(!t)return"";let s=String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");s=s.replace(/```([\s\S]*?)```/g,(m,c)=>'<pre class="ai-code-block">'+c.trim()+"</pre>");s=s.replace(/`([^`\n]+)`/g,"<code>$1</code>").replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/__(.+?)__/g,"<strong>$1</strong>").replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g,"$1<em>$2</em>").replace(/(^|[^_])_([^_\n]+)_(?!_)/g,"$1<em>$2</em>").replace(/^###\s+(.+)$/gm,'<span class="ai-heading">$1</span>').replace(/^##\s+(.+)$/gm,'<span class="ai-heading">$1</span>').replace(/^#\s+(.+)$/gm,'<span class="ai-heading">$1</span>').replace(/^\s*[-*+]\s+(.+)$/gm,'<span class="ai-bullet">• $1</span>').replace(/^\s*(\d+)\.\s+(.+)$/gm,'<span class="ai-number">$1. $2</span>').replace(/\n/g,"<br>");return s}
+function addMessage(text,type){const m=document.createElement("div");m.className="message "+type;if(type==="ai"){const a=document.createElement("div");a.className="avatar";m.appendChild(a)}const b=document.createElement("div");b.className="bubble";type==="ai"?b.innerHTML=formatAIResponse(text):b.textContent=String(text||"");m.appendChild(b);chat.appendChild(m);requestAnimationFrame(()=>chat.scrollTop=chat.scrollHeight)}
+function callbackName(){return"zoraCallback_"+Date.now()+"_"+Math.random().toString(36).slice(2,10)}
+function askZora(question,history){return new Promise((resolve,reject)=>{const cb=callbackName(),script=document.createElement("script");let done=false,timer=null;function cleanup(){if(timer)clearTimeout(timer);script.remove();try{delete window[cb]}catch(e){window[cb]=undefined}}window[cb]=data=>{if(done)return;done=true;cleanup();if(!data||data.success!==true){reject(new Error(data&&data.error?String(data.error):"Backend ZORA tidak memberikan jawaban."));return}resolve(data)};script.onerror=()=>{if(done)return;done=true;cleanup();reject(new Error("Browser tidak menerima response dari Google Apps Script."))};const p=new URLSearchParams({q:String(question),history:JSON.stringify(prepareHistory(history)),callback:cb,_:Date.now()});script.src=BACKEND_URL+"?"+p.toString();script.async=true;document.body.appendChild(script);timer=setTimeout(()=>{if(done)return;done=true;cleanup();reject(new Error("Response ZORA terlalu lama."))},REQUEST_TIMEOUT)})}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function askZoraWithRetry(q,h){let last;for(let i=1;i<=MAX_RETRIES;i++){try{if(i>1){retryStatus.style.display="block";retryStatus.textContent=`Mencoba menghubungkan kembali (${i}/${MAX_RETRIES})...`}const r=await askZora(q,h);retryStatus.style.display="none";return r}catch(e){last=e;if(i<MAX_RETRIES)await wait(i*1500)}}retryStatus.style.display="none";throw last||new Error("ZORA gagal memberikan response.")}
+async function sendMessage(){if(isSending)return;const q=questionInput.value.trim();if(!q)return;isSending=true;sendButton.disabled=micButton.disabled=uploadButton.disabled=true;if(welcome?.parentNode)welcome.remove();addMessage(q,"user");const h=prepareHistory(conversationHistory);questionInput.value="";autoResizeTextarea();loading.style.display="block";try{const r=await askZoraWithRetry(q,h),a=String(r.answer||"").trim();if(!a)throw new Error("ZORA mengembalikan jawaban kosong.");conversationHistory.push({role:"user",text:q},{role:"assistant",text:a});saveMemory();addMessage(a,"ai")}catch(e){addMessage("ZORA belum menerima respons dari server.\n\n"+(e.message||e),"ai")}finally{loading.style.display="none";retryStatus.style.display="none";sendButton.disabled=micButton.disabled=uploadButton.disabled=false;isSending=false;questionInput.focus()}}
+function autoResizeTextarea(){questionInput.style.height="auto";questionInput.style.height=Math.min(questionInput.scrollHeight,150)+"px"}
+/* VOICE */
+function setupVoiceInput(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){micButton.onclick=()=>alert("Speech-to-Text tidak didukung browser ini. Gunakan Chrome atau Edge terbaru.");return}recognition=new SR();recognition.lang="id-ID";recognition.continuous=false;recognition.interimResults=true;recognition.maxAlternatives=1;function help(msg){voiceStatus.textContent=msg;voiceStatus.classList.add("active");voicePermission.classList.add("active");micButton.classList.add("permission-needed")}function hide(){voicePermission.classList.remove("active");micButton.classList.remove("permission-needed")}async function permission(){if(!navigator.mediaDevices?.getUserMedia){help("Browser tidak menyediakan akses microphone. Gunakan Chrome atau Edge.");return false}try{const s=await navigator.mediaDevices.getUserMedia({audio:true});s.getTracks().forEach(t=>t.stop());hide();return true}catch(e){help(e.name==="NotAllowedError"?"Izin microphone ditolak. Izinkan microphone melalui ikon kunci di address bar.":e.name==="NotFoundError"?"Microphone tidak ditemukan.":"ZORA tidak bisa mengakses microphone: "+e.name);return false}}voicePermissionButton.onclick=async()=>{if(await permission())voicePermissionText.textContent="Izin berhasil. Tekan 🎤 untuk mulai bicara."};recognition.onstart=()=>{isListening=true;voiceBaseText=questionInput.value.trim();micButton.classList.add("listening");micButton.textContent="⏹";voiceStatus.textContent="🎙️ Mendengarkan...";voiceStatus.classList.add("active");hide()};recognition.onresult=e=>{let t="";for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;t=t.trim();if(t){questionInput.value=voiceBaseText?(voiceBaseText+" "+t):t;autoResizeTextarea()}};recognition.onerror=e=>{if(e.error==="not-allowed")help("Akses microphone ditolak. Izinkan microphone dari ikon kunci di address bar.");else if(e.error==="no-speech"){voiceStatus.textContent="Tidak terdengar suara. Coba bicara lagi.";voiceStatus.classList.add("active")}else help("Speech-to-Text gagal: "+e.error)};recognition.onend=()=>{isListening=false;micButton.classList.remove("listening");micButton.textContent="🎤";if(!voicePermission.classList.contains("active"))setTimeout(()=>voiceStatus.classList.remove("active"),1200)};micButton.onclick=async()=>{if(isSending)return;if(isListening){recognition.stop();return}if(await permission()){voiceBaseText=questionInput.value.trim();try{recognition.start()}catch(e){setTimeout(()=>{try{if(!isListening)recognition.start()}catch(x){}},300)}}}}
+/* DOCUMENT UPLOAD */
+const MAX_UPLOAD_BYTES=1.25*1024*1024;
+const ALLOWED_UPLOAD_EXTENSIONS=["pdf","txt","doc","docx","xls","xlsx","csv","ppt","pptx","jpg","jpeg","png","webp"];
+
+function setUploadUI(message,state=""){
+  uploadStatus.textContent=message||"";
+  uploadStatus.classList.add("active");
+  uploadStatus.classList.remove("upload-success","upload-error");
+  if(state==="success")uploadStatus.classList.add("upload-success");
+  if(state==="error")uploadStatus.classList.add("upload-error");
+}
+function resetUploadProgress(){
+  uploadProgress.classList.remove("active");
+  uploadProgressBar.style.width="0%";
+  uploadMeta.style.display="none";
+  uploadFileName.textContent="";
+  uploadPercent.textContent="";
+}
+function showUploadProgress(file,percent){
+  uploadProgress.classList.add("active");
+  uploadMeta.style.display="flex";
+  uploadFileName.textContent=file.name;
+  uploadPercent.textContent=Math.max(0,Math.min(100,Math.round(percent)))+"%";
+  uploadProgressBar.style.width=Math.max(0,Math.min(100,percent))+"%";
+}
+function uploadFileToBackend(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    let script=null,timer=null,finished=false,progressTimer=null;
+    function cleanup(){
+      if(timer)clearTimeout(timer);
+      if(progressTimer)clearInterval(progressTimer);
+      if(script&&script.parentNode)script.parentNode.removeChild(script);
+    }
+    reader.onerror=()=>reject(new Error("Browser gagal membaca file."));
+    reader.onprogress=e=>{
+      if(e.lengthComputable)showUploadProgress(file,(e.loaded/e.total)*35);
+    };
+    reader.onload=()=>{
+      try{
+        const dataUrl=String(reader.result||"");
+        const comma=dataUrl.indexOf(",");
+        if(comma<0)throw new Error("Data file tidak valid.");
+        const base64=dataUrl.slice(comma+1);
+        const cb=callbackName();
+
+        window[cb]=data=>{
+          if(finished)return;
+          finished=true;
+          cleanup();
+          try{delete window[cb]}catch(_){window[cb]=undefined}
+          if(!data||data.success!==true){
+            reject(new Error(data&&data.error?String(data.error):"Upload gagal di server."));
+            return;
+          }
+          showUploadProgress(file,100);
+          resolve(data);
+        };
+
+        script=document.createElement("script");
+        script.async=true;
+        script.onerror=()=>{
+          if(finished)return;
+          finished=true;
+          cleanup();
+          try{delete window[cb]}catch(_){window[cb]=undefined}
+          reject(new Error("Browser tidak menerima respons upload dari Google Apps Script."));
+        };
+
+        const params=new URLSearchParams();
+        params.set("action","upload");
+        params.set("callback",cb);
+        params.set("filename",file.name);
+        params.set("mimeType",file.type||"application/octet-stream");
+        params.set("data",base64);
+        params.set("_",String(Date.now()));
+
+        const requestUrl=BACKEND_URL+"?"+params.toString();
+
+        if(requestUrl.length>1800000){
+          try{delete window[cb]}catch(_){window[cb]=undefined}
+          throw new Error("File terlalu besar untuk metode upload saat ini. Maksimal 1,25 MB.");
+        }
+
+        showUploadProgress(file,40);
+        script.src=requestUrl;
+        document.body.appendChild(script);
+
+        let p=40;
+        progressTimer=setInterval(()=>{
+          if(finished){clearInterval(progressTimer);return}
+          if(p<90){p+=2;showUploadProgress(file,p)}
+        },180);
+
+        timer=setTimeout(()=>{
+          if(finished)return;
+          finished=true;
+          cleanup();
+          try{delete window[cb]}catch(_){window[cb]=undefined}
+          reject(new Error("Upload terlalu lama. Coba file yang lebih kecil."));
+        },60000);
+      }catch(e){reject(e)}
+    };
+    reader.readAsDataURL(file);
+  });
+}
+async function handleDocumentUpload(file){
+  if(!file||isSending)return;
+  const ext=file.name.toLowerCase().split(".").pop();
+  if(!ALLOWED_UPLOAD_EXTENSIONS.includes(ext)){
+    setUploadUI("❌ Format file belum didukung.","error");
+    return;
+  }
+  if(file.size>MAX_UPLOAD_BYTES){
+    setUploadUI("❌ File terlalu besar. Maksimal 1,25 MB untuk versi upload ini.","error");
+    return;
+  }
+
+  isSending=true;
+  uploadButton.disabled=true;
+  micButton.disabled=true;
+  sendButton.disabled=true;
+  setUploadUI("📤 Mengupload "+file.name+"...");
+  showUploadProgress(file,1);
+
+  try{
+    const result=await uploadFileToBackend(file);
+    setUploadUI("✅ "+result.fileName+" berhasil diupload ke Google Drive.","success");
+    addMessage(
+      "📎 File berhasil diupload: **"+result.fileName+"**\n\nFile sudah tersimpan di Google Drive ZOYA. Tahap berikutnya adalah menghubungkan file ini ke mesin analisis/Knowledge Base.",
+      "ai"
+    );
+    console.log("ZOYA UPLOAD SUCCESS:",result);
+    setTimeout(()=>{
+      resetUploadProgress();
+      uploadStatus.classList.remove("active");
+    },5000);
+  }catch(e){
+    console.error("ZOYA UPLOAD ERROR:",e);
+    setUploadUI("❌ Upload gagal: "+(e.message||e),"error");
+    uploadProgressBar.style.width="0%";
+  }finally{
+    documentInput.value="";
+    uploadButton.disabled=false;
+    micButton.disabled=false;
+    sendButton.disabled=false;
+    isSending=false;
+    questionInput.focus();
+  }
+}
+uploadButton.onclick=()=>{if(!isSending)documentInput.click()};
+documentInput.onchange=()=>{
+  const file=documentInput.files&&documentInput.files[0];
+  if(file)handleDocumentUpload(file);
+};
+questionInput.oninput=autoResizeTextarea;questionInput.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage()}};sendButton.onclick=sendMessage;loadMemory();setupVoiceInput();console.log("ZOYA AI V10 UPLOAD AKTIF");
+</script>
+</body>
+</html>
